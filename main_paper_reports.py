@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 RUTA_SNII_CSV = "./data/snii_data/salud_economistas_ingenieros_sni_anonymized.csv"
 
 FORMATO_FIGURA = "eps" # pdf o jpg
+PALETA_COLORES = ['#EB6123','#512888','#dc267f','#648fff']
 
 DIRECTORIO_REPORTES = "./data/reports/graficas_paper_en"
 PREFIJO_ARCHIVO_IMAGEN_GENERO_POR_DISCIPLINA = DIRECTORIO_REPORTES + "/disciplina_genero"
@@ -209,7 +210,7 @@ def grafica_stack(
     y_label:str,
     titulo:Optional[str]
 ):      
-    g=sns.displot(df, x=x_col, hue=hue_col, multiple="stack")
+    g=sns.displot(df, x=x_col, hue=hue_col, multiple="stack",palette=PALETA_COLORES)
     g.set_axis_labels(x_label, y_label)  
     total_hue = len(df[hue_col].unique())
     agregar_totales_a_distplot_stack(g=g,total_hue=total_hue)       
@@ -235,6 +236,7 @@ def grafica_barras(
     color:Optional[tuple[float,float,float]]=None    
 ):    
     # construye gráfica
+    sns.set_palette(PALETA_COLORES)
     g = sns.catplot(
         data=df,
         kind="bar",
@@ -468,7 +470,7 @@ def grafica_disciplina_papers_barras_autores(
     ruta_archivo:str
 ):          
     df = df[df[COL_PUBLICACIONES] == COL_PUBLICACIONES_VALOR_AUTORES_CON_SNII]
-    paleta_cols = sns.color_palette()
+    paleta_cols = PALETA_COLORES#sns.color_palette()
 
     # Identifica el color para la segunda barra (naranja en el tema por defecto)
     color_naranja = paleta_cols[1]

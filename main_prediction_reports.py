@@ -63,6 +63,7 @@ VAL_ALIAS_MAPS = {
 
 REPORT_DIR = "data/reports"
 FIGURE_FORMAT = "eps" # png or jpg or eps
+PALETA_COLORES = ['#EB6123','#512888','#dc267f','#648fff']
 
 # IMPORTANT: if you add another CONSTANT for another csv file discipline (like matematicos) then
 #            you have to add another entry in CSV_FILE_INFO
@@ -472,7 +473,7 @@ def save_kde(
     # KDE
     file_path = f"{file_path_preffix}-kde.{file_extension}"          
     #g = sns.displot(data=data, x=main_column, hue=secondary_column, stat="probability")
-    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, kind="kde")
+    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, kind="kde",palette=PALETA_COLORES)
     #g = sns.displot(data=data, x=main_column, hue=secondary_column,kind="kde",fill=True)
     #g = sns.displot(data=data, x=main_column, hue=secondary_column, stat="probability",kde=True)
     g.set_axis_labels(x_var=predictor_name, y_var=y_label)
@@ -492,7 +493,7 @@ def save_cumulative(
     #  CUMULATIVE
     file_path = f"{file_path_preffix}-cum.{file_extension}"      
     #g = sns.displot(data=data, x=main_column, hue=secondary_column, stat="probability")
-    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, kind="ecdf")
+    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, kind="ecdf",palette=PALETA_COLORES)
     #g = sns.displot(data=data, x=main_column, hue=secondary_column,kind="kde",fill=True)
     #g = sns.displot(data=data, x=main_column, hue=secondary_column, stat="probability",kde=True)
     g.set_axis_labels(x_var=predictor_name, y_var=y_label)
@@ -514,7 +515,7 @@ def save_hist(
 )->None:
     # HIST PROBABILITY 
     file_path = f"{file_path_preffix}-hist.{file_extension}"      
-    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, stat="probability")
+    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, stat="probability",palette=PALETA_COLORES)
     g.set_axis_labels(x_var=predictor_name, y_var=y_label)
     config_plot(file_path,g)    
     plt.gca().yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
@@ -534,7 +535,7 @@ def save_hist_step_fill(
 )->None:   
     # HIST PROBABILITY STEP FILL
     file_path = f"{file_path_preffix}-hist_step_fill.{file_extension}"      
-    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, stat="probability", element="step")
+    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, stat="probability", element="step",palette=PALETA_COLORES)
     g.set_axis_labels(x_var=predictor_name, y_var=y_label)
     config_plot(file_path,g)    
     plt.gca().yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
@@ -554,7 +555,7 @@ def save_hist_step_nofill(
 )->None:   
     # HIST PROBABILITY STEP NO FILL
     file_path = f"{file_path_preffix}-hist_step_nofill.{file_extension}"      
-    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, stat="probability", element="step",fill=False)
+    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, stat="probability", element="step",fill=False,palette=PALETA_COLORES)
     g.set_axis_labels(x_var=predictor_name, y_var=y_label)
     config_plot(file_path,g)    
     plt.gca().yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
@@ -579,7 +580,8 @@ def save_hist_stack(
                     hue=target_name,
                     hue_order=target_values,
                     stat="probability",
-                    multiple="stack"
+                    multiple="stack",
+                    palette=PALETA_COLORES
         )    
     g.set_axis_labels(x_var=predictor_name, y_var=y_label)
     config_plot(file_path,g)    
@@ -600,7 +602,7 @@ def save_hist_dodge(
 )->None:     
     # HIST PROBABILITY DODGE
     file_path = f"{file_path_preffix}-hist_dodge.{file_extension}"      
-    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, stat="probability", multiple="dodge")
+    g = sns.displot(data=data, x=predictor_name, hue=target_name, hue_order=target_values, stat="probability", multiple="dodge",palette=PALETA_COLORES)
     g.set_axis_labels(x_var=predictor_name, y_var=y_label)
     config_plot(file_path,g)    
     plt.gca().yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
@@ -641,15 +643,15 @@ def save_distribution_image_file(
     #     data=data        
     # )
     
-    save_hist(
-        file_path_preffix=file_path_preffix,
-        file_extension=file_extension,
-        predictor_name=predictor_name,
-        target_name=target_name,
-        target_values=target_values,
-        y_label=y_label,
-        data=data        
-    )
+    # save_hist(
+    #    file_path_preffix=file_path_preffix,
+    #    file_extension=file_extension,
+    #    predictor_name=predictor_name,
+    #    target_name=target_name,
+    #    target_values=target_values,
+    #    y_label=y_label,
+    #    data=data        
+    #)
     
     # save_hist_step_fill(
     #     file_path_preffix=file_path_preffix,
@@ -671,15 +673,15 @@ def save_distribution_image_file(
     #     data=data        
     # )
     
-    # save_hist_stack(
-    #     file_path_preffix=file_path_preffix,
-    #     file_extension=file_extension,
-    #     predictor_name=predictor_name,
-    #     target_name=target_name,
-    #     target_values=target_values,
-    #     y_label=y_label,
-    #     data=data        
-    # )
+    save_hist_stack(
+        file_path_preffix=file_path_preffix,
+        file_extension=file_extension,
+        predictor_name=predictor_name,
+        target_name=target_name,
+        target_values=target_values,
+        y_label=y_label,
+        data=data        
+    )
     
     # save_hist_dodge(
     #     file_path_preffix=file_path_preffix,

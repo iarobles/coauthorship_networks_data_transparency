@@ -1,0 +1,5 @@
+Random forest,Target category,Stratified,Most frequent,Uniform
+,"Exactidud de los siguientes objetivos: salud,ingenieros,economistas",,,
+0.81,Discipline,0.34,0.38,0.34
+0.53,Affiliation,0.34,0.43,0.23
+0.63,Gender,0.51,0.57,0.52

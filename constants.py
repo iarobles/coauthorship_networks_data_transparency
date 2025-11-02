@@ -75,3 +75,11 @@ GEXF_EXTENSION = ".gexf"
 CVU_PREFFIX = "cvu_"
 SCOPUS_ID_PREFFIX = "sid_"
 
+########################### CATEGORY NAMES #######################
+# CATEGORY NAMES
+CAT_1_NAME = "Category 1"#"Categoría 1"
+CAT_2_NAME = "Category 2"#"Categoría 2"
+CAT_3_NAME = "Category 3"#"Categoría 3"
+CAT_4_NAME = "Category 4"#"Categoría 4"
+
+

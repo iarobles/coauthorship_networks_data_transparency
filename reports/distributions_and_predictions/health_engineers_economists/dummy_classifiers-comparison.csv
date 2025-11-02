@@ -1,0 +1,4 @@
+Random forest,Target category,Stratified,Most frequent,Uniform
+0.81,Discipline,0.32,0.38,0.34
+0.51,Affiliation,0.25,0.12,0.23
+0.62,Gender,0.51,0.43,0.52

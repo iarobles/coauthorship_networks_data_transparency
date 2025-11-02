@@ -1,0 +1,20 @@
+{
+  "name": "Coauthorship Networks Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/python:3.13",
+  "features": {},    
+  "postCreateCommand": "/bin/sh -c 'sudo apt-get update && sudo apt-get install -y graphviz && /usr/local/bin/python -m pip install --upgrade pip && /usr/local/bin/python -m pip install virtualenv && rm -rf .venv && /usr/local/bin/python -m virtualenv .venv && .venv/bin/python -m pip install --upgrade pip && .venv/bin/pip install -r requirements.txt'",  
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.pythonPath": ".venv/bin/python",
+        "python.defaultInterpreterPath": ".venv/bin/python",
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestArgs": ["tests"]
+      },
+      "extensions": [
+        "ms-python.python"
+      ]
+    }
+  }
+}

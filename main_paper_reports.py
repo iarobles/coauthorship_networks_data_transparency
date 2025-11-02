@@ -5,72 +5,72 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 #############################################################################################################
-#  VARIABLES DE CONFIGURACIÓN
+#  CONFIGURATION VARIABLES
 #############################################################################################################
-RUTA_SNII_CSV = "./data/snii_data/salud_economistas_ingenieros_sni_anonymized.csv"
+CSV_PATH_SNII = "./data/snii_data/original/all_persons_health_economists_engineering.csv"
 
-FORMATO_FIGURA = "eps" # pdf o jpg
-PALETA_COLORES = ['#EB6123','#512888','#dc267f','#648fff']
+FIG_FORMAT = "png" # eps, png, pdf or jpg
+COLOR_PALETTE = ['#EB6123','#512888','#dc267f','#648fff']
 
-DIRECTORIO_REPORTES = "./data/reports/graficas_paper_en"
-PREFIJO_ARCHIVO_IMAGEN_GENERO_POR_DISCIPLINA = DIRECTORIO_REPORTES + "/disciplina_genero"
-PREFIJO_ARCHIVO_IMAGEN_AFILIACION_POR_DISCIPLINA = DIRECTORIO_REPORTES + "/disciplina_afiliacion"
-PREFIJO_ARCHIVO_IMAGEN_PAPERS_POR_DISCIPLINA = DIRECTORIO_REPORTES + "/disciplina_papers"
+REPORTS_FOLDER = "./reports/paper_general_graphs"
+IMAGE_FILE_PREFIX_GENDER_BY_DISCIPLINE = REPORTS_FOLDER + "/discipline_gender"
+IMAGE_FILE_PREFIX_AFFILIATION_BY_DISCIPLINE = REPORTS_FOLDER + "/discipline_affiliation"
+IMAGE_FILE_PREFIX_PAPERS_BY_DISCIPLINE = REPORTS_FOLDER + "/discipline_papers"
 
 COL_CVU = "CVU"  # "CVU"
-COL_DISCIPLINA = "Discipline"  # "Disciplina"
-COL_AFILIACION = 'Affiliation'  # 'Afiliación'
-COL_GENERO = 'Gender'  # 'Género'
-COL_COMPLETO = 'Complete'  # 'Completo'
-# COLUMNAS CONSTRUIDAS AL PROCESAR EL DATAFRAME
+COL_DISCIPLINE = "Discipline"  # "Discipline"
+COL_AFFILIATION = 'Affiliation'  # 'Affiliation'
+COL_GENDER = 'Gender'  # 'Gender'
+COL_COMPLETE = 'Complete'  # 'Complete'
+# COLUMNS BUILD 
 COL_TOTAL = 'Total'  # 'Total'
-COL_CONCATENAR_COMPLETO_GENERO = "Complete - Gender"  # "Completo - Género"
+FULL_GENDER_CONCAT_COLUMN = "Complete - Gender"  # "Complete - Gender"
 
-# Mapa para cambiar los nombres de las olumnas del csv a nuevos nombres
-MAPA_RENOMBRAR_NOMBRE_COLS = {
+# Map to change csv column names to new names
+RENAME_COLS_MAP = {
     'cvu': COL_CVU,
-    'disciplina': COL_DISCIPLINA,    
-    # La afiliación original que se tenía desde el principio es sólo
-    # para control interno (ignorar):
+    'disciplina': COL_DISCIPLINE,    
+    # The original affiliation from the beginning is only
+    # for internal control (ignore):
     'afiliacion': 'original_afiliacion',     
-    # Para control interno, ignorar:
+    # For internal control, ignore:
     'completo': 'original_completo',        
-    # La afiliación de acuerdo a las 4 categorías 
-    'categoria_afiliacion': COL_AFILIACION,
-    'genero': COL_GENERO,    
-    # Sí se tienen sus datos completos o no
-    'metrica_calculada':  COL_COMPLETO
+    # The affiliation according to the 4 categories 
+    'categoria_afiliacion': COL_AFFILIATION,
+    'genero': COL_GENDER,    
+    # Whether or not their data is complete
+    'metrica_calculada':  COL_COMPLETE
 }
 
-# mapa para renombrar ciertos valores para columnas dadas 
-# (por ejemplo para Género "f" se pone como "Femenino")
-VALOR_COMPLETO = "Complete"  # "Completos"
-VALOR_INCOMPLETO = "Incomplete"  # "Incompletos"
-TITULO_COMPLETOS = VALOR_COMPLETO  # "Complete"
-TITULO_INCOMPLETOS = VALOR_INCOMPLETO  # "Incomplete"
-TITULO_COMPLETOS_E_INCOMPLETOS = "Complete and Incomplete"  # "Completos e Incompletos"
-X_LABEL_DISCIPLINA = "Discipline"  # "Disciplina"
-Y_LABEL_TOTAL_PERSONAS = "Total people"  # "Total personas"
+# map to rename certain values for given columns 
+# (e.g., for Gender "f" is set to "Female")
+VALUE_COMPLETE = "Complete"  # "Complete"
+VALUE_INCOMPLETE = "Incomplete"  # "Incomplete"
+TITLE_COMPLETE = VALUE_COMPLETE  # "Complete"
+TITLE_INCOMPLETE = VALUE_INCOMPLETE  # "Incomplete"
+TITLE_COMPLETE_AND_INCOMPLE = "Complete and Incomplete"  # "Complete and Incomplete"
+X_LABEL_DISCIPLINE = "Discipline"  # "Discipline"
+Y_LABEL_TOTAL_PEOPLE = "Total people"  # "Total people"
 
-NOMBRE_INGENIERIA = "Engineering"  # "Ingeniería"      
-NOMBRE_CIENCIAS_SALUD = "Health Sci."  # "CC. de la salud"
-NOMBRE_CIENCIAS_ECONOMICAS = "Economic Sci."  # "CC. económicas"
+NAME_ENGINEERING = "Engineering"  # "Engineering"      
+NAME_HEALTH_SCIENCES = "Health Sci."  # "Health Sci."
+NAME_ECONOMIC_SCIENCES = "Economic Sci."  # "Economic Sci."
 
-MAPA_RENOMBRAR_VALORES = {
-    COL_DISCIPLINA:{
-        "INGENIERIA": NOMBRE_INGENIERIA,
-        "CIENCIAS DE LA SALUD": NOMBRE_CIENCIAS_SALUD,
-        "CIENCIAS ECONOMICAS": NOMBRE_CIENCIAS_ECONOMICAS
+VALUE_RENAME_MAP = {
+    COL_DISCIPLINE:{
+        "INGENIERIA": NAME_ENGINEERING,
+        "CIENCIAS DE LA SALUD": NAME_HEALTH_SCIENCES,
+        "CIENCIAS ECONOMICAS": NAME_ECONOMIC_SCIENCES
     },
-    COL_GENERO:{        
-        "f": "Female",#"Femenino",
-        "m": "Male"#"Masculino"
+    COL_GENDER:{        
+        "f": "Female",#"Female",
+        "m": "Male"#"Male"
     },
-    COL_COMPLETO:{
-        True: VALOR_COMPLETO,
-        False:VALOR_INCOMPLETO
+    COL_COMPLETE:{
+        True: VALUE_COMPLETE,
+        False:VALUE_INCOMPLETE
     },
-    COL_AFILIACION:{
+    COL_AFFILIATION:{
         "Categoría 1":"Category 1",
         "Categoría 2":"Category 2",
         "Categoría 3":"Category 3",
@@ -79,164 +79,164 @@ MAPA_RENOMBRAR_VALORES = {
 }
 
 
-COL_TOTAL_PUBLICACIONES = "Total publications"  # Total publicaciones
-COL_PUBLICACIONES = "Publications"  # Publicaciones
-COL_PUBLICACIONES_VALOR_AUTORES_CON_SNII = "From authors with SNII"  # De autores con SNII
-COL_PUBLICACIONES_VALOR_COAUTORES_SIN_SNII = "From coauthors without SNII"  # De coautores sin SNII
-Y_LABEL_TOTAL_PUBLICACIONES = "Total publications"  # Total publicaciones
+COL_TOTAL_PUBLICATIONS = "Total publications"  # Total publications
+COL_PUBLICATIONS = "Publications"  # Publications
+COL_AUTHORS_WITH_SNII_PUBLICATIONS = "From authors with SNII"  # From authors with SNII
+COL_COAUTHORS_WITHOUT_SNII_PUBLICATIONS = "From coauthors without SNII"  # From coauthors without SNII
+Y_LABEL_TOTAL_PUBLICATIONS = "Total publications"  # Total publications
 
-TOTAL_PAPERS_POR_AUTOR_Y_COAUTOR = {
-    COL_DISCIPLINA: [
-                        NOMBRE_CIENCIAS_SALUD,                        
-                        NOMBRE_CIENCIAS_ECONOMICAS, 
-                        NOMBRE_INGENIERIA,
-                        NOMBRE_CIENCIAS_SALUD,                        
-                        NOMBRE_CIENCIAS_ECONOMICAS, 
-                        NOMBRE_INGENIERIA,
+TOTAL_PAPERS_PER_AUTHOR_AND_COAUTHOR = {
+    COL_DISCIPLINE: [
+                        NAME_HEALTH_SCIENCES,                        
+                        NAME_ECONOMIC_SCIENCES, 
+                        NAME_ENGINEERING,
+                        NAME_HEALTH_SCIENCES,                        
+                        NAME_ECONOMIC_SCIENCES, 
+                        NAME_ENGINEERING,
                     ],
-    COL_TOTAL_PUBLICACIONES: [
-                        2210153, # salud coautores
-                        212468,  # economicas coautores
-                        376146,  # ingeniera coautores
-                        23861,   # salud autores snii
-                        7116,    # economicas autores snii
-                        6799     # ingenieria autores snii
+    COL_TOTAL_PUBLICATIONS: [
+                        2210153, # health coauthors
+                        212468,  # economics coauthors
+                        376146,  # engineering coauthors
+                        23861,   # health snii authors
+                        7116,    # economics snii authors
+                        6799     # engineering snii authors
                        ],
-    COL_PUBLICACIONES: [COL_PUBLICACIONES_VALOR_COAUTORES_SIN_SNII,
-                        COL_PUBLICACIONES_VALOR_COAUTORES_SIN_SNII, 
-                        COL_PUBLICACIONES_VALOR_COAUTORES_SIN_SNII,
-                        COL_PUBLICACIONES_VALOR_AUTORES_CON_SNII, 
-                        COL_PUBLICACIONES_VALOR_AUTORES_CON_SNII,
-                        COL_PUBLICACIONES_VALOR_AUTORES_CON_SNII]
+    COL_PUBLICATIONS: [COL_COAUTHORS_WITHOUT_SNII_PUBLICATIONS,
+                        COL_COAUTHORS_WITHOUT_SNII_PUBLICATIONS, 
+                        COL_COAUTHORS_WITHOUT_SNII_PUBLICATIONS,
+                        COL_AUTHORS_WITH_SNII_PUBLICATIONS, 
+                        COL_AUTHORS_WITH_SNII_PUBLICATIONS,
+                        COL_AUTHORS_WITH_SNII_PUBLICATIONS]
 }
 
 
 #############################################################################################################
-#  DEFINICION FUNCIONES
+#  FUNCTION DEFINITIONS
 #############################################################################################################
 
-def construir_dataframe():
-    df = pd.read_csv(RUTA_SNII_CSV)
-    # Renombra los nombres de las columnas a nombres más apropiados para el reporte
-    df = df.rename(columns=MAPA_RENOMBRAR_NOMBRE_COLS)
-    # Renombra valores de algunas columnas
-    for nombre_col, mapa_valores in MAPA_RENOMBRAR_VALORES.items():
-        df[nombre_col] = df[nombre_col].map(
-            mapa_valores,
+def build_dataframe():
+    df = pd.read_csv(CSV_PATH_SNII)
+    # Renames the column names to more appropriate names for the report
+    df = df.rename(columns=RENAME_COLS_MAP)
+    # Renames values in some columns
+    for col_name, value_map in VALUE_RENAME_MAP.items():
+        df[col_name] = df[col_name].map(
+            value_map,
             na_action='ignore'
         )
-    # Agregar una nueva columna de 
-    df[COL_CONCATENAR_COMPLETO_GENERO] = df[COL_COMPLETO] + ' - ' + df[COL_GENERO]
+    # Add a new column
+    df[FULL_GENDER_CONCAT_COLUMN] = df[COL_COMPLETE] + ' - ' + df[COL_GENDER]
     return df
 
-def agrupar_dataframe_por_columnas_rellenar_con_cero(
+def group_dataframe_by_columns_fill_with_zero(
     df:Any,
-    columnas:list[str],
-    nombre_col_total:str,
-    llenar_con_cero_faltantes:bool
+    columns:list[str],
+    col_name_total:str,
+    fill_missing_with_zero:bool
 ):
     
-    if llenar_con_cero_faltantes is False:
-        agregado = df.groupby(columnas).size().reset_index(
-            name=nombre_col_total
+    if fill_missing_with_zero is False:
+        aggregated = df.groupby(columns).size().reset_index(
+            name=col_name_total
         ).sort_values(
-           by=columnas
+           by=columns
         )
-        return agregado
+        return aggregated
     
-    # agrupar
-    agregado = df.groupby(columnas).size().reset_index(name=nombre_col_total)
+    # group
+    aggregated = df.groupby(columns).size().reset_index(name=col_name_total)
 
-    # Crear multiindex con todas las posibles combinaciones
-    valores_unicos = []
-    for col in columnas:
+    # Create multi-index with all possible combinations
+    unique_values = []
+    for col in columns:
         unicos = df[col].unique()
-        valores_unicos.append(unicos)
+        unique_values.append(unicos)
         
     multi_index = pd.MultiIndex.from_product(
-        valores_unicos,
-        names=columnas
+        unique_values,
+        names=columns
     )
 
-    # reindexar y llenar valores que no esten en el multiindex  con 0
-    agregado = agregado.set_index(columnas).reindex(multi_index, fill_value=0).reset_index()
+    # reindex and fill values not in the multi-index with 0
+    aggregated = aggregated.set_index(columns).reindex(multi_index, fill_value=0).reset_index()
 
-    # ordenar el resultado
-    agregado = agregado.sort_values(by=columnas)
+    # sort the result
+    aggregated = aggregated.sort_values(by=columns)
     
-    return agregado
+    return aggregated
 
 
-def agregar_totales_a_distplot_stack(
+def add_totals_to_distplot_stack(
     g:Any,
     total_hue:int
 ):
     # Access the axes from the FacetGrid
     axes = g.axes.flatten()
     total_p = len(axes[0].patches)
-    total_barras = int(total_p/total_hue)
-    p_indice_ultima_barra = total_p - total_barras
-    alturas_barra = [0 for _ in range(0,total_barras)]
+    total_bars = int(total_p/total_hue)
+    p_last_bar_index = total_p - total_bars
+    bar_heights = [0 for _ in range(0,total_bars)]
     for ax in axes:                   
-        for p_indice, p in enumerate(ax.patches):
-            barra_indice = p_indice % total_barras
-            altura = alturas_barra[barra_indice-1] = alturas_barra[barra_indice-1] + p.get_height()
-            # pon el valor total
-            if p_indice>=p_indice_ultima_barra:
+        for p_index, p in enumerate(ax.patches):
+            bar_index = p_index % total_bars
+            height = bar_heights[bar_index-1] = bar_heights[bar_index-1] + p.get_height()
+            # set the total value
+            if p_index>=p_last_bar_index:
                 x = p.get_x() + p.get_width() / 2
-                ax.annotate(f'{int(altura)}',
-                            xy=(x, altura),
+                ax.annotate(f'{int(height)}',
+                            xy=(x, height),
                             xytext=(0, 3),  # Vertical offset
                             textcoords="offset points",
                             ha='center', va='bottom')
                 
-def agrega_totales_a_catplot(
+def add_totals_to_catplot(
     g:Any
 ):
     total = len(g.axes[0])
-    # Coloca el número de personas por cada barra
+    # Place the number of people for each bar
     for i in range(0,total):
         ax = g.axes[0,i]
         for i in ax.containers:
             ax.bar_label(i,fmt='%d')    
     
     
-def grafica_stack(
+def stacked_plot(
     df:Any,
-    ruta_archivo:str,
+    file_path:str,
     x_col:str,
     hue_col:str,
     x_label:str,
     y_label:str,
-    titulo:Optional[str]
+    title:Optional[str]
 ):      
-    g=sns.displot(df, x=x_col, hue=hue_col, multiple="stack",palette=PALETA_COLORES)
+    g=sns.displot(df, x=x_col, hue=hue_col, multiple="stack",palette=COLOR_PALETTE)
     g.set_axis_labels(x_label, y_label)  
     total_hue = len(df[hue_col].unique())
-    agregar_totales_a_distplot_stack(g=g,total_hue=total_hue)       
-    # muestra los bordes: arriba, derecha, abajo e izquierda 
+    add_totals_to_distplot_stack(g=g,total_hue=total_hue)       
+    # show borders: top, right, bottom and left 
     sns.despine(top = False, right=False, bottom=False, left=False)    
     #plt.show()
-    # guarda imagen
-    if titulo is not None:
-        plt.title(titulo)
-    plt.savefig(ruta_archivo)
+    # save image
+    if title is not None:
+        plt.title(title)
+    plt.savefig(file_path)
     plt.close()
     
-def grafica_barras(
+def bar_plot(
     df:Any,
-    ruta_archivo:str,
+    file_path:str,
     x_col:str,
     y_col:str,    
     x_label:str,
     y_label:str,
-    titulos:list[str],
+    titles:list[str],
     hue_col:Optional[str],
     col_col:Optional[str],
     color:Optional[tuple[float,float,float]]=None    
 ):    
-    # construye gráfica
-    sns.set_palette(PALETA_COLORES)
+    # build graph
+    sns.set_palette(COLOR_PALETTE)
     g = sns.catplot(
         data=df,
         kind="bar",
@@ -249,349 +249,350 @@ def grafica_barras(
         #aspect=1.5  # Width/height ratio (increase to make it wider)
         #errorbar="sd"        
     )    
-    # etiquetas eje X y Y
+    # X and Y axis labels
     g.set_axis_labels(x_label, y_label)     
     #g.set_titles(col_template="{col_name}", row_template="{row_name}")
     
-    for indice, titulo in enumerate(titulos):
-        # Nombre fibura 0 (izq) y 1 (derecha)
-        g.axes[0,indice].set_title(titulo)
+    for index, title in enumerate(titles):
+        # Figure name 0 (left) and 1 (right)
+        g.axes[0,index].set_title(title)
     
-    # Coloca el número de personas por cada barra
-    agrega_totales_a_catplot(g) 
+    # Place the number of people for each bar
+    add_totals_to_catplot(g) 
 
-    # muestra los bordes: arriba, derecha, abajo e izquierda 
+    # show borders: top, right, bottom and left 
     sns.despine(top = False, right=False, bottom=False, left=False)    
     #plt.show()
-    # guarda imagen
-    plt.savefig(ruta_archivo)
+    # save image
+    plt.savefig(file_path)
     plt.close()
 
-def grafica_barras_por_agrupamiento(    
+def bar_plot_by_group(    
     df:Any,
-    ruta_archivo:str,
-    columnas:list[str],
-    nombre_col_total:str,
-    llenar_con_cero_faltantes:bool,
+    file_path:str,
+    columns:list[str],
+    col_name_total:str,
+    fill_missing_with_zero:bool,
     x_col:str,
     y_col:str,
     hue_col:str,
     col_col:Optional[str],
     x_label:str,
     y_label:str,
-    titulos:list[str]
+    titles:list[str]
 ):    
-    # construye dataframe con los datos agregados
-    df = agrupar_dataframe_por_columnas_rellenar_con_cero(
+    # build dataframe with aggregated data
+    df = group_dataframe_by_columns_fill_with_zero(
         df=df,
-        columnas=columnas,
-        nombre_col_total=nombre_col_total,
-        llenar_con_cero_faltantes=llenar_con_cero_faltantes
+        columns=columns,
+        col_name_total=col_name_total,
+        fill_missing_with_zero=fill_missing_with_zero
     )        
-    # construye grafica
-    grafica_barras(
+    # build graph
+    bar_plot(
         df=df,
-        ruta_archivo=ruta_archivo,
+        file_path=file_path,
         x_col=x_col,
         y_col=y_col,
         hue_col=hue_col,
         col_col=col_col,
         x_label=x_label,
         y_label=y_label,
-        titulos=titulos
+        titles=titles
     )
     
 
-def grafica_disciplina_genero_barras_comp_inc(
+def discipline_gender_bar_plot_comp_inc(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):    
-    grafica_barras_por_agrupamiento(
+    bar_plot_by_group(
         df = df,
-        ruta_archivo = ruta_archivo,
-        columnas = [COL_DISCIPLINA,COL_COMPLETO,COL_GENERO],
-        nombre_col_total=COL_TOTAL,
-        llenar_con_cero_faltantes=True,
-        x_col=COL_DISCIPLINA,
+        file_path = file_path,
+        columns = [COL_DISCIPLINE,COL_COMPLETE,COL_GENDER],
+        col_name_total=COL_TOTAL,
+        fill_missing_with_zero=True,
+        x_col=COL_DISCIPLINE,
         y_col=COL_TOTAL,
-        hue_col=COL_GENERO,
-        col_col=COL_COMPLETO,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PERSONAS,
-        titulos=[TITULO_INCOMPLETOS,TITULO_COMPLETOS]
+        hue_col=COL_GENDER,
+        col_col=COL_COMPLETE,
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PEOPLE,
+        titles=[TITLE_INCOMPLETE,TITLE_COMPLETE]
     )
     
-def grafica_disciplina_genero_barras_comp(
+def discipline_gender_bar_plot_comp(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):    
-    df = df[df[COL_COMPLETO]==VALOR_COMPLETO]
-    grafica_barras_por_agrupamiento(
+    df = df[df[COL_COMPLETE]==VALUE_COMPLETE]
+    bar_plot_by_group(
         df = df,
-        ruta_archivo = ruta_archivo,
-        columnas = [COL_DISCIPLINA,COL_GENERO],
-        nombre_col_total=COL_TOTAL,
-        llenar_con_cero_faltantes=True,
-        x_col=COL_DISCIPLINA,
+        file_path = file_path,
+        columns = [COL_DISCIPLINE,COL_GENDER],
+        col_name_total=COL_TOTAL,
+        fill_missing_with_zero=True,
+        x_col=COL_DISCIPLINE,
         y_col=COL_TOTAL,
-        hue_col=COL_GENERO,
+        hue_col=COL_GENDER,
         col_col=None,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PERSONAS,
-        titulos=[TITULO_COMPLETOS]
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PEOPLE,
+        titles=[TITLE_COMPLETE]
     )
     
     
-def grafica_disciplina_genero_barras_inc(
+def discipline_gender_bar_plot_inc(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):    
-    df = df[df[COL_COMPLETO]==VALOR_INCOMPLETO]
-    grafica_barras_por_agrupamiento(
+    df = df[df[COL_COMPLETE]==VALUE_INCOMPLETE]
+    bar_plot_by_group(
         df = df,
-        ruta_archivo = ruta_archivo,
-        columnas = [COL_DISCIPLINA,COL_GENERO],
-        nombre_col_total=COL_TOTAL,
-        llenar_con_cero_faltantes=True,
-        x_col=COL_DISCIPLINA,
+        file_path = file_path,
+        columns = [COL_DISCIPLINE,COL_GENDER],
+        col_name_total=COL_TOTAL,
+        fill_missing_with_zero=True,
+        x_col=COL_DISCIPLINE,
         y_col=COL_TOTAL,
-        hue_col=COL_GENERO,
+        hue_col=COL_GENDER,
         col_col=None,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PERSONAS,
-        titulos=[TITULO_INCOMPLETOS]
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PEOPLE,
+        titles=[TITLE_INCOMPLETE]
     )
     
-def grafica_disciplina_genero_stack_comp_inc(
+def discipline_gender_stack_plot_comp_inc(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):
-    grafica_stack(
+    stacked_plot(
         df=df,
-        ruta_archivo=ruta_archivo,
-        x_col=COL_DISCIPLINA,
-        hue_col=COL_CONCATENAR_COMPLETO_GENERO,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PERSONAS,
-        titulo=TITULO_COMPLETOS_E_INCOMPLETOS
+        file_path=file_path,
+        x_col=COL_DISCIPLINE,
+        hue_col=FULL_GENDER_CONCAT_COLUMN,
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PEOPLE,
+        title=TITLE_COMPLETE_AND_INCOMPLE
     )                
     
-def grafica_disciplina_genero_stack_comp(
+def discipline_gender_stack_plot_comp(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):
-    df = df[df[COL_COMPLETO]==VALOR_COMPLETO]
-    grafica_stack(
+    df = df[df[COL_COMPLETE]==VALUE_COMPLETE]
+    stacked_plot(
         df=df,
-        ruta_archivo=ruta_archivo,
-        x_col=COL_DISCIPLINA,
-        hue_col=COL_GENERO,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PERSONAS,
-        titulo=TITULO_COMPLETOS
+        file_path=file_path,
+        x_col=COL_DISCIPLINE,
+        hue_col=COL_GENDER,
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PEOPLE,
+        title=TITLE_COMPLETE
     )                
 
-def grafica_disciplina_genero_stack_inc(
+def discipline_gender_stack_plot_inc(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):
-    df = df[df[COL_COMPLETO]==VALOR_INCOMPLETO]
-    grafica_stack(
+    df = df[df[COL_COMPLETE]==VALUE_INCOMPLETE]
+    stacked_plot(
         df=df,
-        ruta_archivo=ruta_archivo,
-        x_col=COL_DISCIPLINA,
-        hue_col=COL_GENERO,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PERSONAS,
-        titulo=TITULO_INCOMPLETOS
+        file_path=file_path,
+        x_col=COL_DISCIPLINE,
+        hue_col=COL_GENDER,
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PEOPLE,
+        title=TITLE_INCOMPLETE
     )                
         
     
-def grafica_disciplina_afiliacion_barras_comp(
+def discipline_affiliation_bar_plot_comp(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):  
-    df = df[df[COL_COMPLETO]==VALOR_COMPLETO]
-    # construye dataframe con los datos agregados
-    df = agrupar_dataframe_por_columnas_rellenar_con_cero(
+    df = df[df[COL_COMPLETE]==VALUE_COMPLETE]
+    # build dataframe with aggregated data
+    df = group_dataframe_by_columns_fill_with_zero(
         df=df,
-        columnas=[COL_DISCIPLINA,COL_AFILIACION],
-        nombre_col_total=COL_TOTAL,
-        llenar_con_cero_faltantes=True
+        columns=[COL_DISCIPLINE,COL_AFFILIATION],
+        col_name_total=COL_TOTAL,
+        fill_missing_with_zero=True
     )    
     
-    grafica_barras(
+    bar_plot(
         df=df,
-        ruta_archivo=ruta_archivo,
-        x_col=COL_DISCIPLINA,
+        file_path=file_path,
+        x_col=COL_DISCIPLINE,
         y_col=COL_TOTAL,
-        hue_col=COL_AFILIACION,
+        hue_col=COL_AFFILIATION,
         col_col=None,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PERSONAS,
-        titulos=[TITULO_COMPLETOS]
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PEOPLE,
+        titles=[TITLE_COMPLETE]
     )
 
-def grafica_disciplina_afiliacion_stack_comp(
+def discipline_affiliation_stack_plot_comp(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):  
-    df = df[df[COL_COMPLETO]==VALOR_COMPLETO]    
-    grafica_stack(
+    df = df[df[COL_COMPLETE]==VALUE_COMPLETE]    
+    stacked_plot(
         df=df,
-        ruta_archivo=ruta_archivo,
-        x_col=COL_DISCIPLINA,
-        hue_col=COL_AFILIACION,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PERSONAS,
-        titulo=TITULO_COMPLETOS
+        file_path=file_path,
+        x_col=COL_DISCIPLINE,
+        hue_col=COL_AFFILIATION,
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PEOPLE,
+        title=TITLE_COMPLETE
     )                
  
 
-def grafica_disciplina_papers_barras_autores_coautores(
+def discipline_papers_bar_plot_authors_coauthors(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):          
-    grafica_barras(
+    bar_plot(
         df=df,
-        ruta_archivo=ruta_archivo,
-        x_col=COL_DISCIPLINA,
-        y_col=COL_TOTAL_PUBLICACIONES,
-        hue_col=COL_PUBLICACIONES,
+        file_path=file_path,
+        x_col=COL_DISCIPLINE,
+        y_col=COL_TOTAL_PUBLICATIONS,
+        hue_col=COL_PUBLICATIONS,
         col_col=None,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PUBLICACIONES,
-        #titulos=["Publicaciones SNII y coautores sin SNII"]
-        titulos = ["SNII publications and coauthors without SNII"]
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PUBLICATIONS,
+        #titles=["SNII publications and coauthors without SNII"]
+        titles = ["SNII publications and coauthors without SNII"]
     )
     
-def grafica_disciplina_papers_barras_autores(
+def discipline_papers_bar_plot_authors(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):          
-    df = df[df[COL_PUBLICACIONES] == COL_PUBLICACIONES_VALOR_AUTORES_CON_SNII]
-    paleta_cols = PALETA_COLORES#sns.color_palette()
+    df = df[df[COL_PUBLICATIONS] == COL_AUTHORS_WITH_SNII_PUBLICATIONS]
+    paleta_cols = COLOR_PALETTE#sns.color_palette()
 
-    # Identifica el color para la segunda barra (naranja en el tema por defecto)
-    color_naranja = paleta_cols[1]
-    grafica_barras(
+    # Identify the color for the second bar (orange in the default theme)
+    orange_color = paleta_cols[1]
+    bar_plot(
         df=df,
-        ruta_archivo=ruta_archivo,
-        x_col=COL_DISCIPLINA,
-        y_col=COL_TOTAL_PUBLICACIONES,
+        file_path=file_path,
+        x_col=COL_DISCIPLINE,
+        y_col=COL_TOTAL_PUBLICATIONS,
         hue_col=None,
         col_col=None,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PUBLICACIONES,
-        #titulos=["Publicaciones SNII"],
-        titulos = ["SNII publications"],
-        color=color_naranja
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PUBLICATIONS,
+        #titles=["SNII publications"],
+        titles = ["SNII publications"],
+        color=orange_color
     )
     
-def grafica_disciplina_papers_barras_coautores(
+def discipline_papers_bar_plot_coauthors(
     df:Any,
-    ruta_archivo:str
+    file_path:str
 ):          
-    df = df[df[COL_PUBLICACIONES] == COL_PUBLICACIONES_VALOR_COAUTORES_SIN_SNII]
-    grafica_barras(
+    df = df[df[COL_PUBLICATIONS] == COL_COAUTHORS_WITHOUT_SNII_PUBLICATIONS]
+    bar_plot(
         df=df,
-        ruta_archivo=ruta_archivo,
-        x_col=COL_DISCIPLINA,
-        y_col=COL_TOTAL_PUBLICACIONES,
+        file_path=file_path,
+        x_col=COL_DISCIPLINE,
+        y_col=COL_TOTAL_PUBLICATIONS,
         hue_col=None,
         col_col=None,
-        x_label=X_LABEL_DISCIPLINA,
-        y_label=Y_LABEL_TOTAL_PUBLICACIONES,
-        #titulos=["Publicaciones coautores sin SNII"]
-        titulos = ["Co-authors without SNII publications"]
+        x_label=X_LABEL_DISCIPLINE,
+        y_label=Y_LABEL_TOTAL_PUBLICATIONS,
+        #titles=["Co-authors without SNII publications"]
+        titles = ["Co-authors without SNII publications"]
     )
       
 
     
-def construye_imagenes_finales():    
+def build_final_images():    
     sns.set_theme(style="whitegrid")
-    if not os.path.exists(DIRECTORIO_REPORTES):
-        os.makedirs(DIRECTORIO_REPORTES)
-    df = construir_dataframe()
+    if not os.path.exists(REPORTS_FOLDER):
+        os.makedirs(REPORTS_FOLDER)
+    df = build_dataframe()
     
-    ####################################### GENERO POR DISCIPLINA ######################################
-    ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_GENERO_POR_DISCIPLINA + "-barras_comp." + FORMATO_FIGURA
-    grafica_disciplina_genero_barras_comp(
+    ####################################### GENDER BY DISCIPLINE ######################################
+    file_path = IMAGE_FILE_PREFIX_GENDER_BY_DISCIPLINE + "-barras_comp." + FIG_FORMAT
+    discipline_gender_bar_plot_comp(
         df=df,
-        ruta_archivo=ruta_archivo
+        file_path=file_path
     )
-    df.to_csv(ruta_archivo.replace(FORMATO_FIGURA,"csv"))
+    print("Saving gender by discipline in", file_path)
+    df.to_csv(file_path.replace(FIG_FORMAT,"csv"))
     
-    ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_GENERO_POR_DISCIPLINA + "-barras_inc." + FORMATO_FIGURA
-    grafica_disciplina_genero_barras_inc(
+    file_path = IMAGE_FILE_PREFIX_GENDER_BY_DISCIPLINE + "-barras_inc." + FIG_FORMAT
+    discipline_gender_bar_plot_inc(
         df=df,
-        ruta_archivo=ruta_archivo
+        file_path=file_path
     )
-    df.to_csv(ruta_archivo.replace(FORMATO_FIGURA,"csv"))
+    df.to_csv(file_path.replace(FIG_FORMAT,"csv"))
         
-    ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_GENERO_POR_DISCIPLINA + "-barras_inc_comp." + FORMATO_FIGURA
-    grafica_disciplina_genero_barras_comp_inc(
+    file_path = IMAGE_FILE_PREFIX_GENDER_BY_DISCIPLINE + "-barras_inc_comp." + FIG_FORMAT
+    discipline_gender_bar_plot_comp_inc(
         df=df,
-        ruta_archivo=ruta_archivo
+        file_path=file_path
     )
-    df.to_csv(ruta_archivo.replace(FORMATO_FIGURA,"csv"))
-    # ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_GENERO_POR_DISCIPLINA + "-stack_comp_inc." + FORMATO_FIGURA
-    # grafica_disciplina_genero_stack_comp_inc(
+    df.to_csv(file_path.replace(FIG_FORMAT,"csv"))
+    # file_path = IMAGE_FILE_PREFIX_GENDER_BY_DISCIPLINE + "-stack_comp_inc." + FIG_FORMAT
+    # discipline_gender_stack_plot_comp_inc(
     #     df=df,
-    #     ruta_archivo=ruta_archivo
+    #     file_path=file_path
     # )
-    # ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_GENERO_POR_DISCIPLINA + "-stack_comp." + FORMATO_FIGURA
-    # grafica_disciplina_genero_stack_comp(
+    # file_path = IMAGE_FILE_PREFIX_GENDER_BY_DISCIPLINE + "-stack_comp." + FIG_FORMAT
+    # discipline_gender_stack_plot_comp(
     #     df=df,
-    #     ruta_archivo=ruta_archivo
+    #     file_path=file_path
     # )
-    # ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_GENERO_POR_DISCIPLINA + "-stack_inc." + FORMATO_FIGURA
-    # grafica_disciplina_genero_stack_inc(
+    # file_path = IMAGE_FILE_PREFIX_GENDER_BY_DISCIPLINE + "-stack_inc." + FIG_FORMAT
+    # discipline_gender_stack_plot_inc(
     #     df=df,
-    #     ruta_archivo=ruta_archivo
+    #     file_path=file_path
     # )
     
-    ####################################### AFILIACION POR DISCIPLINA ######################################
-    ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_AFILIACION_POR_DISCIPLINA + "-barras_comp." + FORMATO_FIGURA
-    grafica_disciplina_afiliacion_barras_comp(
+    ####################################### AFFILIATION BY DISCIPLINE ######################################
+    file_path = IMAGE_FILE_PREFIX_AFFILIATION_BY_DISCIPLINE + "-barras_comp." + FIG_FORMAT
+    discipline_affiliation_bar_plot_comp(
         df=df,
-        ruta_archivo=ruta_archivo
+        file_path=file_path
     )    
-    df.to_csv(ruta_archivo.replace(FORMATO_FIGURA,"csv"))
+    df.to_csv(file_path.replace(FIG_FORMAT,"csv"))
         
-    # ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_AFILIACION_POR_DISCIPLINA + "-stack_comp." + FORMATO_FIGURA
-    # grafica_disciplina_afiliacion_stack_comp(
+    # file_path = IMAGE_FILE_PREFIX_AFFILIATION_BY_DISCIPLINE + "-stack_comp." + FIG_FORMAT
+    # discipline_affiliation_stack_plot_comp(
     #     df=df,
-    #     ruta_archivo=ruta_archivo
+    #     file_path=file_path
     # )
-    # df.to_csv(ruta_archivo.replace(FORMATO_FIGURA,"csv"))
-    ####################################### PAPERS POR DISCIPLINA ######################################
-    # Crear DataFrame
-    df2 = pd.DataFrame(TOTAL_PAPERS_POR_AUTOR_Y_COAUTOR)    
-    ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_PAPERS_POR_DISCIPLINA + "-barras_autores_coautores." + FORMATO_FIGURA        
-    grafica_disciplina_papers_barras_autores_coautores(
+    # df.to_csv(file_path.replace(FIG_FORMAT,"csv"))
+    ####################################### PAPERS BY DISCIPLINE ######################################
+    # Create DataFrame
+    df2 = pd.DataFrame(TOTAL_PAPERS_PER_AUTHOR_AND_COAUTHOR)    
+    file_path = IMAGE_FILE_PREFIX_PAPERS_BY_DISCIPLINE + "-barras_autores_coautores." + FIG_FORMAT        
+    discipline_papers_bar_plot_authors_coauthors(
         df=df2,
-        ruta_archivo=ruta_archivo
+        file_path=file_path
     )    
-    df2.to_csv(ruta_archivo.replace(FORMATO_FIGURA,"csv"))
-    ####################################### PAPERS POR DISCIPLINA ######################################
-    ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_PAPERS_POR_DISCIPLINA + "-barras_autores." + FORMATO_FIGURA        
-    grafica_disciplina_papers_barras_autores(
+    df2.to_csv(file_path.replace(FIG_FORMAT,"csv"))
+    ####################################### PAPERS BY DISCIPLINE ######################################
+    file_path = IMAGE_FILE_PREFIX_PAPERS_BY_DISCIPLINE + "-barras_autores." + FIG_FORMAT        
+    discipline_papers_bar_plot_authors(
         df=df2,
-        ruta_archivo=ruta_archivo
+        file_path=file_path
     )    
-    df.to_csv(ruta_archivo.replace(FORMATO_FIGURA,"csv"))
-    ####################################### PAPERS POR DISCIPLINA ######################################
-    ruta_archivo = PREFIJO_ARCHIVO_IMAGEN_PAPERS_POR_DISCIPLINA + "-barras_coautores." + FORMATO_FIGURA        
-    grafica_disciplina_papers_barras_coautores(
+    df.to_csv(file_path.replace(FIG_FORMAT,"csv"))
+    ####################################### PAPERS BY DISCIPLINE ######################################
+    file_path = IMAGE_FILE_PREFIX_PAPERS_BY_DISCIPLINE + "-barras_coautores." + FIG_FORMAT        
+    discipline_papers_bar_plot_coauthors(
         df=df2,
-        ruta_archivo=ruta_archivo,
+        file_path=file_path,
     )    
-    df.to_csv(ruta_archivo.replace(FORMATO_FIGURA,"csv"))
+    df.to_csv(file_path.replace(FIG_FORMAT,"csv"))
 
  
 
 #############################################################################################################
-#  EN SUS MARCAS, LISTXS, FUERA!!
+#  READY, SET, GO!!
 #############################################################################################################
-construye_imagenes_finales()
+build_final_images()

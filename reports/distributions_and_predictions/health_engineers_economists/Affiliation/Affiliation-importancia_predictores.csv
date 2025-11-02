@@ -1,0 +1,13 @@
+Order,Predictor,Importance
+1,Closeness centrality,0.103
+2,Cites count,0.092
+3,Average clustering,0.092
+4,Average degree,0.091
+5,Degree assortativity,0.09
+6,Publications count,0.088
+7,Clustering coefficient,0.079
+8,Core number,0.079
+9,Density,0.078
+10,Career length,0.071
+11,Start year,0.071
+12,H-index,0.065
